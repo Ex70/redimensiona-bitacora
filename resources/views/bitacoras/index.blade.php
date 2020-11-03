@@ -1,4 +1,4 @@
-@extends('welcome')
+@extends('dashboard')
 
 @section('scripts')
     <!-- CSS de Bootstrap -->
@@ -10,6 +10,29 @@
 
     <link rel="stylesheet" href="{{ asset('fullcalendar/lib/main.css') }}">
     <script src="{{ asset('fullcalendar/lib/main.js') }}" defer></script>
+    <style>
+            body {
+                font-family: 'Nunito';
+            }
+            #calendar-container {
+                top: 0;
+                left: 0;
+                right: 0;
+                bottom: 0;
+            }
+            input,textarea{
+                border: 1px solid #000000;
+            }
+            .fc-header-toolbar {
+                /*
+                the calendar will be butting up against the edges,
+                but let's scoot in the header's buttons
+                */
+                padding-top: 1em;
+                padding-left: 1em;
+                padding-right: 1em;
+            }
+        </style>
     <script>
         document.addEventListener('DOMContentLoaded', function() {
             var calendarEl = document.getElementById('calendar');
@@ -25,24 +48,21 @@
                 customButtons: {
                     Miboton: {
                         text: 'Botón',
-                        click: function() {
-                            alert('¡Hola Mundo!');
-                            $('#exampleModal').modal('toggle');
+                        click: function(info) {
+                            $('#exampleModal').modal();
                         }
                     }
                 },
                 dateClick: function(info) {
+                    $('#txtFecha').val(info.dateStr);
                     $('#exampleModal').modal();
                     console.log(info);
-                    // alert('Date: ' + info.dateStr);
-                    // alert('Resource ID: ' + info.resource.id);
                     calendar.addEvent({title: "Evento x", date:info.dateStr})
                 },
                 eventClick: function(info){
                     console.log(info);
                     console.log(info.event.title);
                     console.log(info.event.start);
-
                     console.log(info.event.extendedProps.descripcion);
                 },
                 events: [
@@ -50,12 +70,31 @@
                     id: 'a',
                     title: 'Evento 1',
                     start: '2020-10-26 12:30:00',
-                    descripcion: "Descripciòn del evento 1"
+                    descripcion: "Descripción del evento 1"
                     }
                 ]
             });
             calendar.setOption('locale', 'es');
             calendar.render();
+
+            $('#btnAgregar').click(function(){
+                recolectarDatosGUI("POST");
+            });
+
+            function recolectarDatosGUI(method){
+                nuevaBitacora = {
+                    id:$('#txtID').val(),
+                    title:$('#txtTitle').val(),
+                    descripcion:$('#txtDescripcion').val(),
+                    color:$('#txtColor').val(),
+                    textColor:'#FFFFFF',
+                    start:$('#txtFecha').val()+" "+$('#txtHora').val(),
+                    end:$('#txtFecha').val()+" "+$('#txtHora').val(),
+                    '_token':$("meta[name='csrf-token']").attr("content"),
+                    '_method':method
+                }
+                console.log(nuevaBitacora);
+            }
         });
     </script>
 @endsection
@@ -69,17 +108,36 @@
         <div class="modal-dialog">
             <div class="modal-content">
                 <div class="modal-header">
-                <h5 class="modal-title" id="exampleModalLabel">Modal title</h5>
-                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                    <span aria-hidden="true">&times;</span>
-                </button>
+                    <h5 class="modal-title" id="exampleModalLabel">Datos de la bitácora</h5>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
                 </div>
                 <div class="modal-body">
-                ...
+                    ID:
+                    <input type="text" name="txtID" id="txtID">
+                    <br>
+                    Fecha:
+                    <input type="text" name="txtFecha" id="txtFecha">
+                    <br>
+                    Título:
+                    <input type="text" name="txtTitulo" id="txtTitulo">
+                    <br>
+                    Hora:
+                    <input type="text" name="txtHora" id="txtHora">
+                    <br>
+                    Descripción:
+                    <textarea name="txtDescripcion" id="txtDescripcion" cols="30" rows="10"></textarea>
+                    <br>
+                    COlor:
+                    <input type="color" name="txtColor" id="txtColor">
+                    <br>
                 </div>
                 <div class="modal-footer">
-                <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
-                <button type="button" class="btn btn-primary">Save changes</button>
+                    <button id="btnAgregar" class="btn btn-success">Agregar</button>
+                    <button id="btnModificar" class="btn btn-warning">Modificar</button>
+                    <button id="btnBorrar" class="btn btn-danger">Borrar</button>
+                    <button id="btnCancelar" class="btn btn-default" data-dismiss="modal">Cancelar</button>
                 </div>
             </div>
         </div>

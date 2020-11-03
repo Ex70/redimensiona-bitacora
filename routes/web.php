@@ -14,9 +14,11 @@ use Illuminate\Support\Facades\Route;
 */
 
 Route::get('/', function () {
-    return view('bitacoras.index');
+    return view('welcome');
 });
 
+Route::resource('bitacoras','App\Http\Controllers\BitacorasController');
+
 Route::middleware(['auth:sanctum', 'verified'])->get('/dashboard', function () {
-    return view('dashboard');
+    return view('bitacoras.index');
 })->name('dashboard');

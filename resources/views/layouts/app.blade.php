@@ -12,7 +12,7 @@
 
         <!-- Styles -->
         <link rel="stylesheet" href="{{ asset('css/app.css') }}">
-        <!-- @yield('scripts') -->
+        @yield('scripts')
 
         @livewireStyles
 
@@ -33,6 +33,7 @@
             <!-- Page Content -->
             <main>
                 {{ $slot }}
+                @yield('content')
             </main>
         </div>
 
