@@ -13,7 +13,7 @@ class BitacorasController extends Controller
      */
     public function index()
     {
-        //
+        return view("bitacoras.index");
     }
 
     /**
@@ -34,7 +34,8 @@ class BitacorasController extends Controller
      */
     public function store(Request $request)
     {
-        //
+        $datosBitacora=request()->all();
+        print_r($datosBitacora);
     }
 
     /**

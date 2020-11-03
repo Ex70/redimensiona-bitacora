@@ -20,5 +20,5 @@ Route::get('/', function () {
 Route::resource('bitacoras','App\Http\Controllers\BitacorasController');
 
 Route::middleware(['auth:sanctum', 'verified'])->get('/dashboard', function () {
-    return view('bitacoras.index');
+    return view('dashboard');
 })->name('dashboard');
